@@ -49,13 +49,13 @@ manifest:
     #   "Runtime combo subsystem is not available for your keyboard"
     - name: zmk-feature-runtime-macro
       remote: cormoran
-      revision: main
+      revision: zmk-v0.3.0.0
     - name: zmk-feature-runtime-combo
       remote: cormoran
-      revision: main
+      revision: zmk-v0.3.0.0
     - name: zmk-feature-custom-settings
       remote: cormoran
-      revision: main
+      revision: zmk-v0.3.0.0
 
     # ----- PMW3610 trackball driver (Charybdis) -----
     # badjeff's fork, NOT inorichi's. Inorichi's driver calls
