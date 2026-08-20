@@ -1,0 +1,18 @@
+name: Build ZMK firmware
+
+on:
+  push:
+    paths-ignore:
+      - "keymap-drawer/**"
+      - "*.md"
+  pull_request:
+    paths-ignore:
+      - "keymap-drawer/**"
+      - "*.md"
+  workflow_dispatch:
+
+jobs:
+  build:
+    # DYA Studio builds must use cormoran's fork of the build workflow,
+    # matching `revision: v0.3-branch+dya` in config/west.yml.
+    uses: cormoran/zmk/.github/workflows/build-user-config.yml@v0.3-branch+dya

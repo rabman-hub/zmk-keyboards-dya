@@ -1,0 +1,84 @@
+# Combined build matrix for the four keyboards in this monorepo.
+#
+# Board IDs target ZMK `main` (Zephyr 4.1 / HWMv2): `nice_nano` is the
+# short form for `nice_nano@2.0.0//zmk` (formerly `nice_nano_v2`). If you
+# re-pin to v0.3, change every `nice_nano` back to `nice_nano_v2`.
+#
+# RULE: any `shield:` entry containing a space needs an `artifact-name:`,
+# otherwise the build directory gets a literal space in its path and gcc
+# fails with "cannot specify '-o' with '-c' ... with multiple files".
+# See MIGRATION_NOTES §9.
+#
+# Every keyboard here is built in DONGLE configuration: a keyless
+# nice!nano acts as the split central and both halves are peripherals.
+# Standalone (dongle-less) variants for Flake and Charybdis are kept at
+# the bottom, commented out.
+---
+include:
+  # ================= Anywhy Flake (dongle) =================
+  - board: nice_nano_v2
+    shield: anywhy_flake_central_dongle dongle_display
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+    artifact-name: anywhy_flake_central_dongle_oled
+  - board: nice_nano_v2
+    shield: anywhy_flake_peripheral_left
+  - board: nice_nano_v2
+    shield: anywhy_flake_peripheral_right
+
+  # ================= Charybdis / Chary Mini (dongle) =================
+  - board: nice_nano_v2
+    shield: charybdis_central_dongle dongle_display
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+    artifact-name: charybdis_central_dongle_oled
+  - board: nice_nano_v2
+    shield: charybdis_peripheral_left
+  - board: nice_nano_v2
+    shield: charybdis_peripheral_right   # owns the PMW3610 trackball
+
+  # ================= Corne / eyeslash (dongle) =================
+  - board: nice_nano_v2
+    shield: eyeslash_corne_central_dongle dongle_display
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+    artifact-name: eyeslash_corne_central_dongle_oled
+  - board: nice_nano_v2
+    shield: eyeslash_corne_peripheral_left nice_view_adapter nice_view
+    artifact-name: eyeslash_corne_peripheral_left
+  - board: nice_nano_v2
+    shield: eyeslash_corne_peripheral_right nice_view_adapter nice_view
+    artifact-name: eyeslash_corne_peripheral_right
+
+  # ================= Sofle / eyelash (dongle) =================
+  - board: nice_nano_v2
+    shield: eyelash_sofle_central_dongle dongle_display
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+    artifact-name: eyelash_sofle_central_dongle_oled
+  - board: nice_nano_v2
+    shield: eyelash_sofle_peripheral_left nice_view_adapter nice_view
+    artifact-name: eyelash_sofle_peripheral_left
+  - board: nice_nano_v2
+    shield: eyelash_sofle_peripheral_right nice_view_adapter nice_view
+    artifact-name: eyelash_sofle_peripheral_right
+
+  # ================= Settings reset (universal) =================
+  - board: nice_nano_v2
+    shield: settings_reset
+
+  # ================= Standalone (dongle-less) variants =================
+  # Uncomment if you want to run Flake or Charybdis without a dongle.
+  # Flake: LEFT is the central. Charybdis: RIGHT is the central and owns
+  # the trackball locally (no BLE input forwarding needed).
+  #
+  # - board: nice_nano_v2
+  #   shield: anywhy_flake_left
+  #   snippet: studio-rpc-usb-uart
+  #   cmake-args: -DCONFIG_ZMK_STUDIO=y
+  # - board: nice_nano_v2
+  #   shield: anywhy_flake_right
+  # - board: nice_nano_v2
+  #   shield: charybdis_left
+  # - board: nice_nano_v2
+  #   shield: charybdis_right

@@ -1,0 +1,53 @@
+/*
+ * Anywhy Flake — central dongle.
+ *
+ * The dongle has no physical keys, so it uses a mock kscan. Both halves
+ * connect to it as BLE peripherals.
+ *
+ * NOTE: the physical layouts and position_map come from anywhy_flake.dtsi
+ * and are shared with the halves, so ZMK Studio sees the full keyboard
+ * from the dongle.
+ */
+
+#include "anywhy_flake.dtsi"
+#include <behaviors/battery_history_request.dtsi>
+#include <input/processors.dtsi>
+#include <input/processors/runtime-input-processor.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zephyr,display = &oled;
+    };
+
+    mock_kscan: kscan_mock {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
+
+/*
+ * OLED status display on the dongle.
+ * `pro_micro_i2c` maps to the standard Pro Micro SDA/SCL pins, so this
+ * works on a plain nice!nano dongle. Adjust if your dongle differs.
+ */
+&pro_micro_i2c {
+    status = "okay";
+
+        oled: sh1106@3c {
+        compatible = "sinowealth,sh1106";
+        reg = <0x3c>;
+        width = <129>;
+        height = <64>;
+        segment-offset = <1>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <63>;
+        segment-remap;
+        com-invdir;
+        inversion-on;
+        prechargep = <0x22>;
+        };
+};

@@ -1,0 +1,147 @@
+/*
+ * Copyright (c) 2022 Duccio Breschi
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <physical_layouts.dtsi>
+
+/ {
+	chosen {
+
+		zmk,kscan = &kscan0;
+		zmk,physical-layout = &charybdis;
+	};
+
+	default_transform: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		columns = <12>;
+		rows = <4>;
+
+		map = <
+                RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5)                      RC(0,6)  RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11)
+                RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5)                      RC(1,6)  RC(1,7) RC(1,8) RC(1,9) RC(1,10) RC(1,11)
+                RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)                      RC(2,6)  RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11)
+				                        RC(3,3) RC(3,4) RC(3,5)                      RC(3,6)  RC(3,7) RC(3,8) 
+				                
+		>;
+	};
+
+	kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN";
+
+		diode-direction = "col2row";
+
+		/*
+		 * col-gpios added for the monorepo: all four Charybdis variants
+		 * wire the columns identically, and the central dongle has no
+		 * matrix overlay at all — without this the dongle build fails
+		 * with "'col-gpios' is marked as required".
+		 */
+		col-gpios
+			= <&pro_micro 9 (GPIO_ACTIVE_HIGH)>  // COL0
+			, <&pro_micro 8 (GPIO_ACTIVE_HIGH)>  // COL1
+			, <&pro_micro 7 (GPIO_ACTIVE_HIGH)>  // COL2
+			, <&pro_micro 6 (GPIO_ACTIVE_HIGH)>  // COL3
+			, <&pro_micro 5 (GPIO_ACTIVE_HIGH)>  // COL4
+			, <&pro_micro 4 (GPIO_ACTIVE_HIGH)>  // COL5
+			;
+
+		       row-gpios=  <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> 
+				         , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> 
+				         , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> 
+				         , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> 
+				        
+				;
+	};
+
+
+        charybdis: charybdis {
+		compatible = "zmk,physical-layout";
+		display-name = "matrix layout";
+	 kscan = <&kscan0>;
+		transform = <&default_transform>;
+
+         keys  //                     w   h    x    y     rot    rx    ry
+            = <&key_physical_attrs 100 100    0    0       0     0     0>
+            , <&key_physical_attrs 100 100  100    0       0     0     0>
+            , <&key_physical_attrs 100 100  200    0       0     0     0>
+            , <&key_physical_attrs 100 100  300    0       0     0     0>
+            , <&key_physical_attrs 100 100  400    0       0     0     0>
+            , <&key_physical_attrs 100 100  500    0       0     0     0>
+            , <&key_physical_attrs 100 100 1250    0       0     0     0>
+            , <&key_physical_attrs 100 100 1350    0       0     0     0>
+            , <&key_physical_attrs 100 100 1450    0       0     0     0>
+            , <&key_physical_attrs 100 100 1550    0       0     0     0>
+            , <&key_physical_attrs 100 100 1650    0       0     0     0>
+            , <&key_physical_attrs 100 100 1750    0       0     0     0>
+            , <&key_physical_attrs 100 100    0  100       0     0     0>
+            , <&key_physical_attrs 100 100  100  100       0     0     0>
+            , <&key_physical_attrs 100 100  200  100       0     0     0>
+            , <&key_physical_attrs 100 100  300  100       0     0     0>
+            , <&key_physical_attrs 100 100  400  100       0     0     0>
+            , <&key_physical_attrs 100 100  500  100       0     0     0>
+            , <&key_physical_attrs 100 100 1250  100       0     0     0>
+            , <&key_physical_attrs 100 100 1350  100       0     0     0>
+            , <&key_physical_attrs 100 100 1450  100       0     0     0>
+            , <&key_physical_attrs 100 100 1550  100       0     0     0>
+            , <&key_physical_attrs 100 100 1650  100       0     0     0>
+            , <&key_physical_attrs 100 100 1750  100       0     0     0>
+            , <&key_physical_attrs 100 100    0  200       0     0     0>
+            , <&key_physical_attrs 100 100  100  200       0     0     0>
+            , <&key_physical_attrs 100 100  200  200       0     0     0>
+            , <&key_physical_attrs 100 100  300  200       0     0     0>
+            , <&key_physical_attrs 100 100  400  200       0     0     0>
+            , <&key_physical_attrs 100 100  500  200       0     0     0>
+            , <&key_physical_attrs 100 100 1250  200       0     0     0>
+            , <&key_physical_attrs 100 100 1350  200       0     0     0>
+            , <&key_physical_attrs 100 100 1450  200       0     0     0>
+            , <&key_physical_attrs 100 100 1550  200       0     0     0>
+            , <&key_physical_attrs 100 100 1650  200       0     0     0>
+            , <&key_physical_attrs 100 100 1750  200       0     0     0>
+            , <&key_physical_attrs 100 100  425  400    3000   600   325>
+            , <&key_physical_attrs 100 100  550  375    3000   600   325>
+            , <&key_physical_attrs 100 100  675  325    3000   600   325>
+            , <&key_physical_attrs 100 100 1075  325 (-3000)  1250   325>
+            , <&key_physical_attrs 100 100 1200  375 (-3000)  1250   325>
+            , <&key_physical_attrs 100 100 1325  400 (-3000)  1250   325>
+            ;
+    };
+
+
+	/*
+	 * Split pointing plumbing, added for the dongle configuration.
+	 *
+	 * The trackball is physically on the RIGHT half, which is a
+	 * peripheral once a dongle is the central — so its events are
+	 * forwarded over BLE via zmk,input-split.
+	 *
+	 * The split node is declared here for every part but left DISABLED:
+	 * ZMK asserts that an enabled peripheral input-split has a device
+	 * attached, which would break the LEFT half. It is switched on by
+	 * the central and the right peripheral only.
+	 *
+	 * The listener also lives here, disabled, so keymaps (compiled for
+	 * both central and peripheral) can reference &trackball_listener
+	 * without an undefined-reference error.
+	 */
+	split_inputs {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		trackball_split: trackball_split@0 {
+			compatible = "zmk,input-split";
+			reg = <0>;
+			status = "disabled";
+		};
+	};
+
+	trackball_listener: trackball_listener {
+		compatible = "zmk,input-listener";
+		device = <&trackball_split>;
+		status = "disabled";
+	};
+
+};

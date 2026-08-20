@@ -1,0 +1,97 @@
+/*
+ * PMW3610 trackball hardware (SPI0 + sensor node).
+ *
+ * Driver: badjeff/zmk-pmw3610-driver (NOT inorichi's).
+ *
+ * Inorichi's driver implements scroll-mode / snipe-mode / auto-mouse-layer
+ * inside the driver, which means it calls zmk_keymap_highest_layer_active().
+ * The keymap is not linked into split PERIPHERAL builds, so on a dongle
+ * setup — where the sensor lives on a peripheral — that driver fails at
+ * link time. badjeff's fork is built for split peripherals and moved
+ * those features out to keymap-side input listeners.
+ *
+ * badjeff also moved tuning from Kconfig into devicetree, so the settings
+ * that used to be CONFIG_PMW3610_* now live on the node below.
+ */
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+&pinctrl {
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 8)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 17)>,
+                <NRF_PSEL(SPIM_MISO, 0, 17)>;
+        };
+    };
+
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 8)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 17)>,
+                <NRF_PSEL(SPIM_MISO, 0, 17)>;
+            low-power-enable;
+        };
+    };
+};
+
+&spi0 {
+    status = "okay";
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-1 = <&spi0_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio0 20 GPIO_ACTIVE_LOW>;
+
+    trackball: trackball@0 {
+        status = "okay";
+
+        /*
+         * badjeff's breaking change: the compatible is "pixart,pmw3610-alt",
+         * renamed to avoid clashing with Zephyr's in-tree PMW3610 driver.
+         *
+         * Using the old name binds to the YAML (so devicetree validation
+         * passes) but the driver's DT_DRV_COMPAT is the -alt name, so it
+         * finds zero instances and never creates a device struct. That
+         * surfaces at link time as:
+         *   undefined reference to `__device_dts_ord_NN'
+         */
+        compatible = "pixart,pmw3610-alt";
+
+        reg = <0>;
+        spi-max-frequency = <2000000>;
+        irq-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+        /*
+         * Required by badjeff's binding — these tell the driver which
+         * input event type and axis codes to emit. Inorichi's driver
+         * hard-coded them; badjeff made them explicit so a second sensor
+         * can be wired as a dedicated scroll device on the same shield.
+         * Omitting them fails devicetree validation with
+         * "'evt-type' is marked as required".
+         */
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
+
+        /* was CONFIG_PMW3610_CPI=2400 — moved to devicetree by badjeff */
+        cpi = <2400>;
+
+        /*
+         * was CONFIG_PMW3610_ORIENTATION_90 — badjeff replaced the
+         * ORIENTATION_* options with explicit axis flags. A 90° rotation
+         * is a swap plus one inversion; if the cursor goes the wrong way
+         * after flashing, move the inversion to the other axis.
+         */
+        swap-xy;
+        invert-x;
+        // invert-y;
+
+        /*
+         * scroll-layers / snipe-layers / automouse-layer are deliberately
+         * absent — badjeff's driver does not implement them, and DYA
+         * Studio owns that behaviour through
+         * &mouse_runtime_input_processor. See MIGRATION_NOTES §15.
+         */
+    };
+};

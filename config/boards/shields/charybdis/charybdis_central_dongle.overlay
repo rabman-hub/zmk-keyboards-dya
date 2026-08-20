@@ -1,0 +1,77 @@
+/*
+ * Charybdis — central dongle.
+ * No physical keys (mock kscan). Both halves are BLE peripherals.
+ */
+
+#include "charybdis.dtsi"
+#include <behaviors/battery_history_request.dtsi>
+#include <input/processors.dtsi>
+#include <input/processors/runtime-input-processor.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zephyr,display = &oled;
+    };
+
+    mock_kscan: kscan_mock {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
+
+/*
+ * The trackball is on the RIGHT peripheral. `trackball_split` is declared
+ * in charybdis.dtsi with no `device`, because the sensor is remote; ZMK
+ * feeds it from the peripheral over BLE. Enabling the listener here (and
+ * only here) is what turns those events into cursor movement.
+ */
+&trackball_split {
+    status = "okay";      /* receives events from the right peripheral */
+};
+
+&trackball_listener {
+    status = "okay";
+
+    /*
+     * Route the trackball through the runtime input processor so DYA
+     * Studio can tune it live (sensitivity/scaling, axis inversion,
+     * auto-mouse layer) without re-flashing.
+     *
+     * `mouse_runtime_input_processor` is one of the two default
+     * instances provided by
+     * <input/processors/runtime-input-processor.dtsi> in
+     * cormoran/zmk-module-runtime-input-processor (the other being
+     * `scroll_runtime_input_processor`, for a dedicated scroll listener).
+     *
+     * Processors run on the listener, which lives on the CENTRAL — so
+     * this belongs here on the dongle, not on the peripheral that
+     * physically owns the sensor.
+     */
+    input-processors = <&mouse_runtime_input_processor>;
+};
+
+/*
+ * OLED on the dongle. `pro_micro_i2c` is the standard Pro Micro SDA/SCL
+ * alias, so this works on a plain nice!nano. Adjust if yours differs.
+ */
+&pro_micro_i2c {
+    status = "okay";
+
+        oled: sh1106@3c {
+        compatible = "sinowealth,sh1106";
+        reg = <0x3c>;
+        width = <129>;
+        height = <64>;
+        segment-offset = <1>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <63>;
+        segment-remap;
+        com-invdir;
+        inversion-on;
+        prechargep = <0x22>;
+        };
+};

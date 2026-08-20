@@ -1,0 +1,40 @@
+/*
+ * Charybdis — standalone (non-dongle) right half.
+ * This half is the split CENTRAL and owns the trackball locally, so the
+ * shared listener is re-pointed straight at the sensor and enabled,
+ * bypassing the input-split entirely.
+ */
+
+#include "charybdis.dtsi"
+#include "charybdis-trackball.dtsi"
+#include <input/processors.dtsi>
+#include <input/processors/runtime-input-processor.dtsi>
+
+&default_transform {
+    col-offset = <6>;
+};
+
+&kscan0 {
+    diode-direction = "col2row";
+    col-gpios
+        = <&pro_micro 9 (GPIO_ACTIVE_HIGH)> // COL0
+        , <&pro_micro 8 (GPIO_ACTIVE_HIGH)> // COL1
+        , <&pro_micro 7 (GPIO_ACTIVE_HIGH)> // COL2
+        , <&pro_micro 6 (GPIO_ACTIVE_HIGH)> // COL3
+        , <&pro_micro 5 (GPIO_ACTIVE_HIGH)> // COL4
+        , <&pro_micro 4 (GPIO_ACTIVE_HIGH)> // COL5
+    ;
+};
+
+&trackball_listener {
+    device = <&trackball>;
+    status = "okay";
+
+    /*
+     * Same runtime processor as the dongle build. The shared
+     * charybdis-trackball.dtsi no longer sets the driver's scroll /
+     * auto-mouse layer features, so without this the standalone build
+     * would have neither those nor the DYA Studio equivalents.
+     */
+    input-processors = <&mouse_runtime_input_processor>;
+};

@@ -1,0 +1,19 @@
+# west workspace — created by ./zmk-build.sh, do not commit
+/.west/
+/zmk/
+/zephyr/
+/modules/
+/bootloader/
+/tools/zephyr*/
+
+# local build artefacts
+/build/
+/firmware/
+
+*.uf2
+*.hex
+__pycache__/
+.DS_Store
+
+# python venv created by zmk-build.sh
+/.venv/

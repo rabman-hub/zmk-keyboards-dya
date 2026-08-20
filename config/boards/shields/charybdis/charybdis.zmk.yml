@@ -1,0 +1,19 @@
+file_format: "1"
+id: charybdis
+name: Charybdis (Chary Mini)
+type: shield
+url: https://github.com/TheSkyHeart/Chary-Mini-zmk
+requires: [pro_micro]
+features:
+  - keys
+  - pointer
+  - display
+outputs:
+  - usb
+  - ble
+siblings:
+  - charybdis_left
+  - charybdis_right
+  - charybdis_central_dongle
+  - charybdis_peripheral_left
+  - charybdis_peripheral_right

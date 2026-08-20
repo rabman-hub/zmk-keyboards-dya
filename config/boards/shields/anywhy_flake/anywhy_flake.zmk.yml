@@ -1,0 +1,19 @@
+file_format: "1"
+id: anywhy_flake
+name: Anywhy Flake
+type: shield
+url: https://github.com/anywhy-io/flake
+requires: [pro_micro]
+features:
+  - keys
+  - display
+  - studio
+outputs:
+  - usb
+  - ble
+siblings:
+  - anywhy_flake_left
+  - anywhy_flake_right
+  - anywhy_flake_central_dongle
+  - anywhy_flake_peripheral_left
+  - anywhy_flake_peripheral_right

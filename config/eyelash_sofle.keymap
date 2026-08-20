@@ -1,0 +1,180 @@
+#include <input/processors.dtsi>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/*
+
+   &mmv_input_listener {
+       input-processors = <&zip_xy_scaler 2 1>;
+   };
+
+   &msc_input_listener {
+       input-processors = <&zip_xy_scaler 2 1>;
+   };
+
+ */
+
+/* pointing.h already defines these; undef first to avoid a redefinition warning */
+#undef ZMK_POINTING_DEFAULT_MOVE_VAL
+#undef ZMK_POINTING_DEFAULT_SCRL_VAL
+
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1200  // 600
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 10
+
+/ {
+    behaviors {
+        td0: td0 {
+            compatible = "zmk,behavior-tap-dance";
+            display-name = "Shift/Caps Lock Tap Dance";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_SHIFT>, <&kp CAPS>;
+        };
+
+        hrm_left: hrm_left {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HRM_LEFT";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <175>;
+            hold-trigger-on-release;
+            hold-trigger-key-positions = <19 20 21 22 23 24 32 33 34 35 36 37 45 46 47 48 49 50 55 56 57 58 59 60>;
+        };
+
+        hrm_right: hrm_right {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HRM_RIGHT";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <175>;
+            hold-trigger-on-release;
+            hold-trigger-key-positions = <13 14 15 16 17 18 26 27 28 29 30 31 39 40 41 42 43 44 55 56 57 58 59 60>;
+        };
+
+        layer_tap: layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP";
+            bindings = <&mo>, <&kp>;
+
+            #binding-cells = <2>;
+            quick-tap-ms = <175>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <280>;
+        };
+    };
+
+    rgb_encoder: rgb_encoder {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
+    };
+
+    scroll_encoder: scroll_encoder {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+
+        tap-ms = <30>;
+    };
+
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        qwerty {
+            display-name = "QWERTY";
+            bindings = <
+  &kp ESC  &kp N1  &kp N2  &kp N3  &kp N4  &kp N5  &kp UP_ARROW  &kp N6  &kp N7  &kp N8  &kp N9  &kp N0  &kp DELETE
+  &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp I  &kp O  &kp P  &lt 4 ESC  &kp BSLH
+  &kp BACKSPACE  &kp A  &hrm_left LALT S  &hrm_left LCTRL D  &hrm_left LSHFT F  &kp G  &kp H  &hrm_right RSHFT J  &hrm_right RCTRL K  &hrm_right RALT L  &kp SEMICOLON  &kp SQT  &kp APOS
+  &kp LEFT_SHIFT  &hrm_left LEFT_GUI Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA  &kp DOT  &hrm_right RIGHT_GUI SLASH  &kp RIGHT_SHIFT  &kp LEFT_SHIFT
+  &kp C_MUTE  &kp LEFT_GUI  &kp LEFT_ALT  &kp LEFT_CONTROL  &mo 2  &layer_tap 3 SPACE  &layer_tap 3 ENTER  &mo 1  &kp RIGHT_ALT  &kp RIGHT_CONTROL  &kp RIGHT_ALT  &mo 1
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+        };
+
+        symbol {
+            label = "SYMBOL";
+            bindings = <
+  &studio_unlock  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &mmv MOVE_UP  &kp F6  &kp F7  &kp F8  &kp F9  &kp F10  &studio_unlock
+  &trans  &kp EXCLAMATION  &kp AT_SIGN  &kp HASH  &kp DOLLAR  &kp PERCENT  &kp CARET  &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans  &kp PLUS
+  &trans  &kp TILDE  &kp PLUS  &kp UNDERSCORE  &kp MINUS  &kp PIPE  &kp PIPE  &kp MINUS  &kp UNDERSCORE  &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp DELETE  &kp RBRC
+  &trans  &kp LESS_THAN  &kp GREATER_THAN  &kp GRAVE  &kp BACKSLASH  &kp EQUAL  &kp COLON  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &trans  &trans
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+            >;
+            sensor-bindings = <&scroll_encoder>;
+        };
+
+        Num {
+            label = "Num";
+            bindings = <
+  &trans  &kp F1  &kp F2  &kp F3  &kp F4  &kp F5  &mmv MOVE_UP  &kp F6  &kp F7  &kp F8  &kp F9  &kp F10  &trans
+  &trans  &kp N1  &kp N2  &kp N3  &kp N4  &kp N5  &kp N6  &kp N7  &kp N8  &kp N9  &kp N0  &kp BACKSPACE  &kp F11
+  &trans  &kp LEFT_GUI  &kp LEFT_ALT  &kp LEFT_CONTROL  &kp LEFT_SHIFT  &kp SLASH  &kp PLUS  &kp N4  &kp N5  &kp N6  &kp MINUS  &kp ENTER  &kp F12
+  &trans  &mkp MB5  &mkp MB4  &mkp LCLK  &mkp MCLK  &mkp RCLK  &kp ASTERISK  &kp N1  &kp N2  &kp N3  &kp EQUAL  &kp CARET  &trans
+  &kp C_MUTE  &trans  &trans  &trans  &trans  &trans  &kp N0  &kp PERIOD  &kp COMMA  &trans  &trans  &trans
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+        };
+
+        Nav {
+            display-name = "Nav";
+            bindings = <
+  &trans  &kp F1  &kp F2  &kp F3  &kp F4  &kp F5  &mmv MOVE_UP  &kp F6  &kp F7  &kp F8  &kp F9  &kp F10  &trans
+  &rgb_ug RGB_EFR  &rgb_ug RGB_EFF  &rgb_ug RGB_SPD  &rgb_ug RGB_SPI  &rgb_ug RGB_BRD  &rgb_ug RGB_BRI  &kp PAGE_UP  &kp HOME  &kp UP_ARROW  &kp END  &kp K_REDO  &sys_reset  &trans
+  &bt BT_CLR  &kp LEFT_GUI  &kp LEFT_ALT  &kp LEFT_CONTROL  &kp LEFT_SHIFT  &bt BT_SEL 4  &kp PAGE_DOWN  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT  &kp RIGHT  &bootloader  &trans
+  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_OFF  &rgb_ug RGB_ON  &rgb_ug RGB_TOG  &kp K_LOCK  &kp LS(LC(V))  &kp LS(LC(C))  &kp LS(LC(T))  &kp END  &studio_unlock  &trans
+  &kp C_MUTE  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+            >;
+            sensor-bindings = <&rgb_encoder>;
+        };
+
+        Fun {
+            label = "Fun";
+            bindings = <
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+  &kp F1  &kp F2  &kp F3  &kp F4  &kp F5  &kp F6  &kp PERCENT  &kp N7  &kp N8  &kp N9  &kp EQUAL  &kp BACKSPACE  &trans
+  &kp F7  &kp F8  &kp F9  &kp F10  &kp F11  &kp F12  &kp PLUS  &kp N4  &kp N5  &kp N6  &kp MINUS  &kp ENTER  &trans
+  &kp PRINTSCREEN  &mkp MB5  &mkp MB4  &mkp LCLK  &mkp MCLK  &mkp RCLK  &kp ASTERISK  &kp N1  &kp N2  &kp N3  &kp FSLH  &kp CARET  &trans
+  &trans  &trans  &trans  &trans  &trans  &trans  &kp N0  &kp COMMA  &kp DOT  &trans  &trans  &trans
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+        };
+
+        system {
+            display-name = "SYSTEM";
+            bindings = <
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+  &rgb_ug RGB_EFR  &rgb_ug RGB_EFF  &rgb_ug RGB_SPD  &rgb_ug RGB_SPI  &rgb_ug RGB_BRD  &rgb_ug RGB_BRI  &kp PAGE_UP  &kp HOME  &kp UP_ARROW  &kp END  &kp K_REDO  &sys_reset  &trans
+  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &kp PAGE_DOWN  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT  &kp RIGHT  &bootloader  &trans
+  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_OFF  &rgb_ug RGB_ON  &rgb_ug RGB_TOG  &kp K_LOCK  &kp LS(LC(V))  &kp LS(LC(C))  &kp LS(LC(T))  &kp END  &studio_unlock  &trans
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+            >;
+            sensor-bindings = <&rgb_encoder>;
+        };
+
+        lower {
+            label = "LOWER";
+            bindings = <
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+  &to 0  &trans  &to 0  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+  &trans  &trans  &trans  &trans  &tog 5  &tog 4  &tog 1  &tog 5  &trans  &trans  &trans  &trans
+            >;
+        };
+
+    };
+};

@@ -1,0 +1,76 @@
+manifest:
+  remotes:
+    - name: cormoran
+      url-base: https://github.com/cormoran
+    - name: badjeff
+      url-base: https://github.com/badjeff
+    - name: gpeye
+      url-base: https://github.com/GPeye
+    - name: englmaxi
+      url-base: https://github.com/englmaxi
+  projects:
+    # ----- ZMK core: cormoran's DYA fork -----
+    # DYA Studio needs cormoran's ZMK fork, which adds the custom RPC
+    # subsystem the web app talks to. `v0.3-branch+dya` is based on ZMK
+    # v0.3 (Zephyr 3.5), so it is a drop-in for the v0.3.0 pin this repo
+    # used previously.
+    #
+    # NOTE: cormoran's fork is described upstream as experimental and
+    # tuned for DYA keyboards. To go back to stock ZMK, restore:
+    #     remote: zmkfirmware   (url-base https://github.com/zmkfirmware)
+    #     revision: v0.3.0
+    # and remove the five cormoran modules below plus the DYA Kconfig
+    # blocks in the shield .conf files. See MIGRATION_NOTES §15.
+    - name: zmk
+      remote: cormoran
+      revision: v0.3-branch+dya
+      import: app/west.yml
+
+    # ----- DYA Studio modules (all cormoran) -----
+    # Revisions match the reference zmk-corne-dongle DYA config.
+    - name: zmk-module-ble-management
+      remote: cormoran
+      revision: zmk-v0.3.0.0
+    - name: zmk-module-runtime-input-processor
+      remote: cormoran
+      revision: zmk-v0.3.0.0
+    - name: zmk-module-settings-rpc
+      remote: cormoran
+      revision: main
+    - name: zmk-module-battery-history
+      remote: cormoran
+      revision: main
+    - name: zmk-behavior-runtime-sensor-rotate
+      remote: cormoran
+      revision: main
+
+    # ----- PMW3610 trackball driver (Charybdis) -----
+    # badjeff's fork, NOT inorichi's. Inorichi's driver calls
+    # zmk_keymap_highest_layer_active() for its scroll/snipe/auto-layer
+    # features; the keymap is not linked into split PERIPHERAL builds, so
+    # it fails at link time with an undefined reference. In a dongle
+    # setup the sensor is on a peripheral, so that driver cannot be used.
+    #
+    # badjeff's fork is explicitly "compatible to be used on split
+    # peripheral shield" and moved those layer features out of the driver
+    # into keymap-side input-listeners — which is where we want them
+    # anyway, since DYA Studio owns them (MIGRATION_NOTES §15).
+    #
+    # Bastard Keyboards' own wireless Charybdis firmware and the eigatech
+    # Charybdis-dongle config both make the same switch.
+    - name: zmk-pmw3610-driver
+      remote: badjeff
+      revision: main
+
+    # ----- Peripheral nice!view images -----
+    - name: hammerbeam-slideshow
+      remote: gpeye
+      revision: main
+
+    # ----- Dongle OLED status screen -----
+    - name: zmk-dongle-display
+      remote: englmaxi
+      revision: v0.3
+
+  self:
+    path: config
