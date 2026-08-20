@@ -31,6 +31,7 @@
 	kscan0: kscan {
 		compatible = "zmk,kscan-gpio-matrix";
 		label = "KSCAN";
+        wakeup-source;
 /*
 		 * col-gpios added for the monorepo: all four Charybdis variants
 		 * wire the columns identically, and the central dongle has no
