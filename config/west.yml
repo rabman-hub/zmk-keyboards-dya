@@ -36,24 +36,11 @@ manifest:
       revision: zmk-v0.3.0.0
     - name: zmk-module-settings-rpc
       remote: cormoran
-      revision: main
+      revision: zmk-v0.3.0.0
     - name: zmk-module-battery-history
       remote: cormoran
       revision: main
     - name: zmk-behavior-runtime-sensor-rotate
-      remote: cormoran
-      revision: main
-    # Runtime macros + combos — these back DYA Studio's "Macro & Combo"
-    # tab. Without them the tab reports:
-    #   "Runtime macro subsystem not found"
-    #   "Runtime combo subsystem is not available for your keyboard"
-    - name: zmk-feature-runtime-macro
-      remote: cormoran
-      revision: zmk-v0.3.0.0
-    - name: zmk-feature-runtime-combo
-      remote: cormoran
-      revision: zmk-v0.3.0.0
-    - name: zmk-feature-custom-settings
       remote: cormoran
       revision: zmk-v0.3.0.0
 
