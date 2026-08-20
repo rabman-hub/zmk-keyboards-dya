@@ -455,3 +455,37 @@ layers:
   - {t: '$$mdi:transfer$$', type: trans}
   - {t: '$$mdi:transfer$$', type: trans}
   - {t: '$$mdi:transfer$$', type: trans}
+combos:
+- p: [4, 5]
+  k: {t: '{', h: '}'}
+  l: [QWERTY, SYMBOL, Num, Nav, Fun, SYSTEM]
+- p: [6, 7]
+  k: '}'
+  l: [QWERTY, SYMBOL, Num, Nav, Fun, SYSTEM]
+- p: [16, 17]
+  k: {t: (, h: )}
+  l: [QWERTY, SYMBOL, Num, Nav, Fun, SYSTEM]
+- p: [18, 19]
+  k: )
+  l: [QWERTY, SYMBOL, Num, Nav, Fun, SYSTEM]
+- p: [28, 29]
+  k: {h: '[', s: '{'}
+  l: [QWERTY, SYMBOL, Num, Nav, Fun, SYSTEM]
+- p: [30, 31]
+  k: {h: ']', s: '}'}
+  l: [QWERTY, SYMBOL, Num, Nav, Fun, SYSTEM]
+- p: [0, 1]
+  k: $$mdi:keyboard-esc$$
+  l: [QWERTY]
+- p: [3, 4]
+  k: $$mdi:arrow-up-bold$$
+  l: [QWERTY]
+- p: [27, 28]
+  k: $$mdi:arrow-down-bold$$
+  l: [QWERTY]
+- p: [14, 15]
+  k: $$mdi:arrow-left-bold$$
+  l: [QWERTY]
+- p: [15, 16]
+  k: $$mdi:arrow-right-bold$$
+  l: [QWERTY]
