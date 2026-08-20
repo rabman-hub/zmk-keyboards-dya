@@ -29,14 +29,69 @@
 };
 
 /*
- * OLED status display on the dongle.
- * `pro_micro_i2c` maps to the standard Pro Micro SDA/SCL pins, so this
- * works on a plain nice!nano dongle. Adjust if your dongle differs.
+ * The dongle has no key matrix — it uses mock_kscan above. But kscan0 is
+ * declared in anywhy_flake.dtsi with compatible = "zmk,kscan-gpio-matrix",
+ * whose binding marks col-gpios and row-gpios as REQUIRED. The two halves
+ * supply them from their own overlays; the dongle has no such overlay, so
+ * without this the build fails with:
+ *   'row-gpios' is marked as required ... but does not appear in <Node /kscan0>
+ *
+ * These are placeholders purely to satisfy devicetree validation — the
+ * pins are never scanned, since zmk,kscan points at mock_kscan. They
+ * mirror the LEFT half's wiring arbitrarily; Flake's two halves use
+ * different pins, so no single set is "correct" for the dongle.
  */
-&pro_micro_i2c {
-    status = "okay";
+&kscan0 {
+    col-gpios
+        = <&pro_micro 2 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 3 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 4 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 5 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 6 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 7 GPIO_ACTIVE_HIGH>
+        ;
 
-        oled: sh1106@3c {
+    row-gpios
+        = <&pro_micro 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
+};
+
+/*
+ * OLED on the dongle — copied verbatim from the working Corne dongle
+ * config (the original author's), NOT hand-written.
+ *
+ * The hardware is a SH1106 129x64 on i2c0, SDA=P0.17 / SCL=P0.20. An
+ * earlier hand-rolled node here declared a solomon,ssd1306fb at 128x32 —
+ * wrong controller AND wrong geometry, which renders as dots and stray
+ * lines instead of the status screen.
+ */
+&pinctrl {
+    i2c0_default: i2c0_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0,17)>,
+                <NRF_PSEL(TWIM_SCL, 0, 20)>;
+        };
+    };
+
+    i2c0_sleep: i2c0_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                <NRF_PSEL(TWIM_SCL, 0, 20)>;
+            low-power-enable;
+        };
+    };	
+}; 
+
+&i2c0 {
+	status = "okay";
+	compatible = "nordic,nrf-twi";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+	oled: sh1106@3c {
         compatible = "sinowealth,sh1106";
         reg = <0x3c>;
         width = <129>;
@@ -49,5 +104,5 @@
         com-invdir;
         inversion-on;
         prechargep = <0x22>;
-        };
+	};
 };
