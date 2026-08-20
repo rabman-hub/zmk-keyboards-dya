@@ -7,6 +7,17 @@
 #include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
+/ {
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        system_layer {
+            // Num + symbol held together -> system
+            if-layers = <2 1>;
+            then-layer = <5>;
+        };
+    };
+
 /*
 
    &mmv_input_listener {
@@ -89,6 +100,86 @@
         tap-ms = <30>;
     };
 
+    combos {
+        compatible = "zmk,combos";
+
+        combo_lbrc {
+            timeout-ms = <50>;
+            key-positions = <4 5>; // KP: VB
+            bindings = <&mt RBRC LBRC>;
+            layers = <0 1 2 3 4 5>;
+        };
+
+        combo_rbrc {
+            timeout-ms = <50>;
+            key-positions = <6 7>; // KP: NM
+            bindings = <&kp RBRC>;
+            layers = <0 1 2 3 4 5>;
+        };
+
+        combo_lpar {
+            timeout-ms = <50>;
+            key-positions = <16 17>; // KP: FG
+            bindings = <&mt RPAR LPAR>;
+            layers = <0 1 2 3 4 5>;
+        };
+
+        combo_rpar {
+            timeout-ms = <50>;
+            key-positions = <18 19>;
+            bindings = <&kp RPAR>;
+            layers = <0 1 2 3 4 5>;
+        };
+
+        combo_lbkt {
+            timeout-ms = <50>;
+            key-positions = <28 29>; // KP: RT
+            bindings = <&mt RBKT LBKT>;
+            layers = <0 1 2 3 4 5>;
+        };
+
+        combo_rbkt {
+            timeout-ms = <50>;
+            key-positions = <30 31>; // KP: YU
+            bindings = <&kp RBKT>;
+            layers = <0 1 2 3 4 5>;
+        };
+
+        esc {
+            timeout-ms = <50>;
+            key-positions = <0 1>;
+            bindings = <&kp ESC>; // ESC
+            layers = <0>;
+        };
+
+        up {
+            bindings = <&kp UP>;
+            key-positions = <3 4>;
+            layers = <0>;
+            timeout-ms = <50>;
+        };
+
+        down {
+            bindings = <&kp DOWN>;
+            key-positions = <27 28>;
+            timeout-ms = <50>;
+            layers = <0>;
+        };
+
+        left {
+            bindings = <&kp LEFT>;
+            key-positions = <14 15>;
+            layers = <0>;
+            timeout-ms = <50>;
+        };
+
+        right {
+            bindings = <&kp RIGHT>;
+            key-positions = <15 16>;
+            layers = <0>;
+            timeout-ms = <50>;
+        };
+    };
 
     keymap {
         compatible = "zmk,keymap";
