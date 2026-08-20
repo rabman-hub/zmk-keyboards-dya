@@ -25,17 +25,6 @@
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 10
 
 / {
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-
-        system_layer {
-            // Num + symbol held together -> system
-            if-layers = <2 1>;
-            then-layer = <5>;
-        };
-    };
-
-/*
     behaviors {
         td0: td0 {
             compatible = "zmk,behavior-tap-dance";
