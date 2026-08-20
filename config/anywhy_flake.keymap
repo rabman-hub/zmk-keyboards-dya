@@ -7,18 +7,6 @@
 #include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
-/ {
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-
-        system_layer {
-            // Num + symbol held together -> system
-            if-layers = <2 1>;
-            then-layer = <5>;
-        };
-    };
-
-
 /*
 
    &mmv_input_listener {
@@ -37,6 +25,17 @@
 
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1200  // 600
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 10
+
+/ {
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        system_layer {
+            // Num + symbol held together -> system
+            if-layers = <2 1>;
+            then-layer = <5>;
+        };
+    };
 
 / {
     behaviors {
