@@ -43,6 +43,16 @@ manifest:
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
       revision: main
+    # Runtime macros + combos — these back DYA Studio's "Macro & Combo"
+    # tab. Without them the tab reports:
+    #   "Runtime macro subsystem not found"
+    #   "Runtime combo subsystem is not available for your keyboard"
+    - name: zmk-feature-runtime-macro
+      remote: cormoran
+      revision: main
+    - name: zmk-feature-runtime-combo
+      remote: cormoran
+      revision: main
 
     # ----- PMW3610 trackball driver (Charybdis) -----
     # badjeff's fork, NOT inorichi's. Inorichi's driver calls
