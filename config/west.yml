@@ -53,6 +53,9 @@ manifest:
     - name: zmk-feature-runtime-combo
       remote: cormoran
       revision: main
+    - name: zmk-feature-custom-settings
+      remote: cormoran
+      revision: main
 
     # ----- PMW3610 trackball driver (Charybdis) -----
     # badjeff's fork, NOT inorichi's. Inorichi's driver calls
