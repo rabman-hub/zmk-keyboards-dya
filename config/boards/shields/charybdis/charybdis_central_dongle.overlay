@@ -34,23 +34,13 @@
 
 &trackball_listener {
     status = "okay";
-
-    /*
-     * Route the trackball through the runtime input processor so DYA
-     * Studio can tune it live (sensitivity/scaling, axis inversion,
-     * auto-mouse layer) without re-flashing.
-     *
-     * `mouse_runtime_input_processor` is one of the two default
-     * instances provided by
-     * <input/processors/runtime-input-processor.dtsi> in
-     * cormoran/zmk-module-runtime-input-processor (the other being
-     * `scroll_runtime_input_processor`, for a dedicated scroll listener).
-     *
-     * Processors run on the listener, which lives on the CENTRAL — so
-     * this belongs here on the dongle, not on the peripheral that
-     * physically owns the sensor.
-     */
     input-processors = <&mouse_runtime_input_processor>;
+
+    /* Nav layer (3): trackball scrolls instead of moving the cursor. */
+    scroller {
+        layers = <3>;
+        input-processors = <&zip_xy_to_scroll_mapper>, <&scroll_runtime_input_processor>;
+    };
 };
 
 /*
